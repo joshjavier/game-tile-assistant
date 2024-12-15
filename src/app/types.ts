@@ -1,14 +1,50 @@
-export const BrandValues = [
-  'mc_nj',
-  'mc_pa',
-  'mc_mi',
-  'mc_wv',
-  'mc_on',
-  'pc_nj',
-  'bc_nj',
-  'bc_pa',
-  'wof_nj',
-  'wof_on',
-]
+import { isSomeEnum } from "../utils"
 
-export type Brand = (typeof BrandValues)[number]
+/**
+ * The domain name used in official brand websites
+ *
+ * @example <caption>see enclosed in parentheses</caption>
+ * // https://casino.nj.(betmgm).com
+ * // https://casino.(borgataonline).com
+ * // https://casino.nj.(partycasino).com
+ */
+export enum Brand {
+  betmgm = 'betmgm',
+  borgata = 'borgataonline',
+  partycasino = 'partycasino',
+  wof = 'wheeloffortunecasino',
+}
+
+/**
+ * The state subdomain used in official brand websites
+ *
+ * @example <caption>see enclosed in parentheses</caption>
+ * // https://casino.(nj).betmgm.com
+ * // https://casino.(pa).borgataonline.com
+ * // https://casino.(on).wheeloffortunecasino.com
+ */
+export enum State {
+  NJ = 'nj',
+  PA = 'pa',
+  MI = 'mi',
+  WV = 'wv',
+  ON = 'on',
+}
+
+/**
+ * Accepted brand slugs used for routing within the app
+ *
+ * @example <caption>see enclosed in parentheses</caption>
+ * // /(betmgm)/nj
+ * // /(borgata)/pa
+ * // /(wof)/on
+ */
+export enum BrandSlug {
+  betmgm = 'betmgm',
+  borgata = 'borgata',
+  wof = 'wof',
+  partycasino = 'partycasino',
+}
+
+export const isBrandSlug = isSomeEnum(BrandSlug)
+export const isState = isSomeEnum(State)

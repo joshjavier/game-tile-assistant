@@ -1,7 +1,9 @@
+import { useParams } from "react-router"
 import { useGetGamesQuery } from "./gamesApiSlice"
 
 export const Games = () => {
-  const { data, isError, isLoading, isSuccess } = useGetGamesQuery()
+  const { brand, state } = useParams()
+  const { data, isError, isLoading, isFetching, isSuccess } = useGetGamesQuery({ brand, state })
 
   if (isError) {
     return (
@@ -9,7 +11,7 @@ export const Games = () => {
     )
   }
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <div><h1>Loading...</h1></div>
     )
@@ -17,7 +19,15 @@ export const Games = () => {
 
   if (isSuccess) {
     return (
-      <div>Games have been fetched. Check the console.</div>
+      <div>
+        <ol>
+          {data.map(game =>
+            <li key={game.id}>
+              {game.game} - {game.name} - {game.provider}
+            </li>
+          )}
+        </ol>
+      </div>
     )
   }
 }
