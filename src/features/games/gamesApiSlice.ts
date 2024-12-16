@@ -1,39 +1,28 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { getGamesByBrandState, type GameMetaData } from "./gamesApi"
 import { isAxiosError } from "axios"
-
-type Game = Pick<GameMetaData, 'game' | 'name' | 'provider'> & { id: string }
+import { getGamesByBrandState, type Game } from "./gamesApi"
 
 export const gamesApiSlice = createApi({
-  // baseQuery: fetchBaseQuery({ baseUrl: 'https://casino.nj.betmgm.com/en/games/api/content/GetGameMetaDataFromLMTAsync' }),
-  baseQuery: fetchBaseQuery({}),
+  baseQuery: fetchBaseQuery({ baseUrl: '/' }),
   reducerPath: 'gamesApi',
   tagTypes: ['Games'],
-  // keepUnusedDataFor: 5, // how long should we keep the fetched games data? maybe 5 mins is good enough...
+  keepUnusedDataFor: 60 * 5, // keep cached data for 5 minutes
 
   endpoints(build) {
     return {
-      getGames: build.query<Game[], { brand?: string, state?: string }>({
-        providesTags(result, error, arg, meta) {
-          return [{ type: 'Games', id: `${arg.brand}_${arg.state}` }]
-        },
-        queryFn: async (arg, api, extraOptions, baseQuery) => {
+      getGames: build.query<
+        Record<'desktop' | 'mobile', Game[]>,
+        { brand?: string, state?: string }
+      >({
+        queryFn: async ({ brand, state }) => {
           try {
-            const games = await getGamesByBrandState(arg.brand, arg.state)
-            const data: Game[] = games.data.map(
-              ({ game, name, provider, sid }) => ({
-                id: sid.slice(4),
-                game,
-                name,
-                provider,
-              })
-            )
+            const data = await getGamesByBrandState(brand, state)
             return { data }
           } catch (err) {
             if (isAxiosError(err)) {
               return {
                 error: {
-                  status: err.response?.status,
+                  status: err.response!.status,
                   data: err.response?.data || err.message,
                 }
               }
@@ -43,11 +32,14 @@ export const gamesApiSlice = createApi({
 
             return {
               error: {
-                status: 'CUSTOM_ERROR',
-                data: 'Unknown error',
+                status: 400,
+                data: 'Unknown error. Check the console for more info.',
               }
             }
           }
+        },
+        providesTags(result, error, arg, meta) {
+          return [{ type: 'Games', id: `${arg.brand}_${arg.state}` }]
         },
       }),
     }

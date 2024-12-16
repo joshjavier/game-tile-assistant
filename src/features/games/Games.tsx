@@ -21,7 +21,7 @@ export const Games = () => {
     return (
       <div>
         <ol>
-          {data.map(game =>
+          {data.desktop.map(game =>
             <li key={game.id}>
               {game.game} - {game.name} - {game.provider}
             </li>

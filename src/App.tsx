@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from "react-router"
+import { Link, Navigate, Route, Routes } from "react-router"
 import "./App.css"
 import { Counter } from "./features/counter/Counter"
 import { Games } from "./features/games/Games"
@@ -29,7 +29,12 @@ const App = () => {
         </div>
       </header>
       <Routes>
-        <Route path="/:brand/:state" element={<Games />} />
+        <Route index element={<Navigate to="betmgm/nj" />} />
+        <Route path=":brand">
+          <Route index element={<Navigate to="nj" />} />
+          <Route path=":state" element={<Games />} />
+        </Route>
+        <Route path="quotes" element={<Quotes />} />
       </Routes>
     </div>
   )
