@@ -1,5 +1,6 @@
 import { useParams } from "react-router"
 import { useGetGamesQuery } from "./gamesApiSlice"
+import Search from "../../components/Search"
 
 export const Games = () => {
   const { brand, state } = useParams()
@@ -20,13 +21,7 @@ export const Games = () => {
   if (isSuccess) {
     return (
       <div>
-        <ol>
-          {data.desktop.map(game =>
-            <li key={game.id}>
-              {game.game} - {game.name} - {game.provider}
-            </li>
-          )}
-        </ol>
+        <Search documents={data.desktop} />
       </div>
     )
   }

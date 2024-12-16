@@ -22,7 +22,7 @@ export const gamesApiSlice = createApi({
             if (isAxiosError(err)) {
               return {
                 error: {
-                  status: err.response!.status,
+                  status: err.response?.status as number,
                   data: err.response?.data || err.message,
                 }
               }

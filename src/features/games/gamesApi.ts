@@ -16,14 +16,15 @@ export async function getGamesByBrandState(
 ): Promise<{ desktop: Game[], mobile: Game[] }> {
   const baseURL = getCasinoBaseUrl(brand, state)
   const url = baseURL + '/en/games/api/content/GetGameMetaDataFromLMTAsync'
-  const mobileUA = 'Mozilla/5.0 (Android 13; Mobile; rv:109.0) Gecko/114.0 Firefox/114.0'
+  const corsUrl = 'https://corsproxy.joshjavier12.workers.dev/corsproxy/?mobile&apiurl=' + url
+  // const mobileUA = 'Mozilla/5.0 (Android 13; Mobile; rv:109.0) Gecko/114.0 Firefox/114.0'
 
   const { data: desktopGameMetaData } = await axios.get<GameMetaData[]>(url)
-  const { data: mobileGameMetaData } = await axios.get<GameMetaData[]>(url, {
-    headers: { 'User-Agent': mobileUA },
-  })
+  const { data: mobileGameMetaData } = await axios.get<GameMetaData[]>(corsUrl)
 
-  const dgcAndNetentGameMetaData = mobileGameMetaData.filter(({ provider }) => provider === 'DGC' || provider === 'NETENT')
+  const desktopGameIds = desktopGameMetaData.map(game => game.sid)
+  const mobileOnly = mobileGameMetaData.filter(game => !desktopGameIds.includes(game.sid))
+  // const dgcAndNetentGameMetaData = mobileGameMetaData.filter(({ provider }) => ['DGC', 'NETENT'].includes(provider))
 
   const itemToGame = ({ game, name, provider, sid }: GameMetaData): Game => ({
     id: sid.slice(4),
@@ -34,6 +35,6 @@ export async function getGamesByBrandState(
 
   return {
     desktop: desktopGameMetaData.map(itemToGame),
-    mobile: dgcAndNetentGameMetaData.map(itemToGame),
+    mobile: mobileOnly.map(itemToGame),
   }
 }
