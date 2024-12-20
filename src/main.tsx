@@ -1,10 +1,11 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
-import { Provider } from "react-redux"
 import { BrowserRouter } from "react-router"
+import { Provider as ReduxProvider } from "react-redux"
+import { Provider as UiProvider } from "@/components/ui/provider"
 import App from "./App"
 import { store } from "./app/store"
-import "./index.css"
+// import "./index.css"
 
 const container = document.getElementById("root")
 
@@ -13,11 +14,13 @@ if (container) {
 
   root.render(
     <React.StrictMode>
-      <Provider store={store}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Provider>
+      <UiProvider>
+        <ReduxProvider store={store}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ReduxProvider>
+      </UiProvider>
     </React.StrictMode>,
   )
 } else {
