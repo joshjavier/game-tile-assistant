@@ -1,20 +1,20 @@
-import React from "react"
-import { createRoot } from "react-dom/client"
-import { BrowserRouter } from "react-router"
-import { Provider as ReduxProvider } from "react-redux"
-import { Provider as UiProvider } from "@/components/ui/provider"
-import App from "./App"
-import { store } from "./app/store"
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router'
+import { Provider as ReduxProvider } from 'react-redux'
+import { Provider as UiProvider } from '@/components/ui/provider'
+import App from './App'
+import { store } from './app/store'
 // import "./index.css"
 
-const container = document.getElementById("root")
+const container = document.getElementById('root')
 
 if (container) {
   const root = createRoot(container)
 
   root.render(
     <React.StrictMode>
-      <UiProvider>
+      <UiProvider defaultTheme="light">
         <ReduxProvider store={store}>
           <BrowserRouter>
             <App />
