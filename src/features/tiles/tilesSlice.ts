@@ -23,7 +23,7 @@ function gameToTile(game: [Game, Game?], brand = '', state = ''): ITile {
   return { id, name, slug, mobile, smartlink, image }
 }
 
-interface TilesSliceState {
+export interface TilesSliceState {
   tiles: ITile[]
 }
 
