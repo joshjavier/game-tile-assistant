@@ -38,10 +38,16 @@ export const tilesSlice = createSlice({
     tileAdded: (state, action: PayloadAction<ITile>) => {
       state.tiles.push(action.payload)
     },
+    tileRemoved: (state, action: PayloadAction<string>) => {
+      state.tiles = state.tiles.filter(({ id }) => id !== action.payload)
+    },
+    tilesCleared: state => {
+      state.tiles = []
+    },
   },
 })
 
-export const { tileAdded } = tilesSlice.actions
+export const { tileAdded, tileRemoved, tilesCleared } = tilesSlice.actions
 export default tilesSlice.reducer
 
 export const selectTiles = (state: RootState) => state.tiles.tiles

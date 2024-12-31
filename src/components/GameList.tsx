@@ -1,5 +1,6 @@
 import type { Game } from '@/features/games/gamesApi'
-import { Stack, Text } from '@chakra-ui/react'
+import { Box, Highlight, HStack, IconButton, Text } from '@chakra-ui/react'
+import { LuPlus } from 'react-icons/lu'
 
 interface GameListProps {
   games: Game[]
@@ -17,15 +18,57 @@ export const GameList = ({ games }: GameListProps) => {
   )
 }
 
-type GameItemProps = Omit<Game, 'id'>
+type GameItemProps = Omit<Game, 'id'> & {
+  query?: string[]
+  isHighlighted?: boolean
+}
 
-export const GameItem = ({ name, game, provider }: GameItemProps) => {
+export const GameItem = ({
+  name,
+  game,
+  provider,
+  isHighlighted,
+  query,
+}: GameItemProps) => {
   return (
-    <Stack p={3} borderBottomWidth="1px">
-      <Text>{name}</Text>
-      <Text textStyle="sm" color="fg.muted">
-        {game}
-      </Text>
-    </Stack>
+    <HStack
+      justify="space-between"
+      userSelect="none"
+      borderRadius="sm"
+      py="1.5"
+      px="2"
+      bg={{
+        base: isHighlighted ? 'bg.muted' : undefined,
+        _dark: isHighlighted ? 'bg.emphasized' : undefined,
+        _focusWithin: 'bg.muted',
+      }}
+      transition="backgrounds"
+      transitionDuration="fast"
+      textStyle="sm"
+    >
+      <Box>
+        <Highlight
+          ignoreCase
+          query={query || []}
+          styles={{ fontWeight: 'semibold' }}
+        >
+          {name}
+        </Highlight>
+        <Text textStyle="xs" color="fg.muted">
+          {game}
+        </Text>
+      </Box>
+      <IconButton
+        variant="ghost"
+        aria-label="Add game"
+        title="Add game"
+        opacity={{
+          base: isHighlighted ? 1 : 0,
+          _focusVisible: 1,
+        }}
+      >
+        <LuPlus />
+      </IconButton>
+    </HStack>
   )
 }

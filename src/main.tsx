@@ -14,7 +14,7 @@ if (container) {
 
   root.render(
     <React.StrictMode>
-      <UiProvider defaultTheme="light">
+      <UiProvider>
         <ReduxProvider store={store}>
           <BrowserRouter>
             <App />

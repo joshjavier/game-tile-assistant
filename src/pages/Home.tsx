@@ -1,44 +1,60 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import BrandStateSelect from '@/components/BrandStateSelect'
+import { FetchStatus } from '@/components/FetchStatus'
 import { GameItem } from '@/components/GameList'
+import { GameSearch } from '@/components/GameSearch'
+import { TileList } from '@/components/TileList'
+import { InputGroup } from '@/components/ui/input-group'
 import type { Game } from '@/features/games/gamesApi'
 import { useGetGamesQuery } from '@/features/games/gamesApiSlice'
 import { GameTilesCode } from '@/features/tiles/GameTilesCode'
-import { addGameTile, selectTiles } from '@/features/tiles/tilesSlice'
 import {
+  addGameTile,
+  selectTiles,
+  tilesCleared,
+  tileRemoved,
+} from '@/features/tiles/tilesSlice'
+import {
+  Box,
   Container,
-  FormatNumber,
   Heading,
   HStack,
   Input,
   Spinner,
   Stack,
-  Text,
 } from '@chakra-ui/react'
 import type { Options } from 'minisearch'
 import { useEffect, useState } from 'react'
 import Autosuggest from 'react-autosuggest'
+import { LuSearch } from 'react-icons/lu'
 import { useMiniSearch } from 'react-minisearch'
 import { useParams } from 'react-router'
-import { timeAgo } from 'short-time-ago'
+import { Button } from '@/components/ui/button'
 
 const miniSearchOptions: Options = {
   fields: ['name'],
   searchOptions: {
-    prefix: term => term.length >= 3,
-    fuzzy: term => (term.length >= 3 ? 0.2 : false),
     combineWith: 'AND',
+    prefix: true,
+    fuzzy: 0.2,
   },
 }
 
 const Home = () => {
   const { brand, state } = useParams()
-  const { data, isError, isFetching, fulfilledTimeStamp } = useGetGamesQuery({
-    brand,
-    state,
-  })
-  const { search, searchResults, clearSearch, addAllAsync, removeAll } =
-    useMiniSearch([], miniSearchOptions)
+  const { data, isError, isFetching, fulfilledTimeStamp, currentData } =
+    useGetGamesQuery({
+      brand,
+      state,
+    })
+  const {
+    search,
+    searchResults,
+    clearSearch,
+    addAllAsync,
+    removeAll,
+    isIndexing,
+  } = useMiniSearch([], miniSearchOptions)
   const [query, setQuery] = useState('')
   const dispatch = useAppDispatch()
   const tiles = useAppSelector(selectTiles)
@@ -62,63 +78,130 @@ const Home = () => {
     return suggestion.name
   }
 
-  const renderSuggestion = ({ id, ...game }: Game) => {
-    return <GameItem {...game} />
+  const renderSuggestion = (
+    { id, ...game }: Game,
+    { query, isHighlighted }: { query?: string; isHighlighted?: boolean },
+  ) => {
+    return (
+      <GameItem
+        {...game}
+        isHighlighted={isHighlighted}
+        query={query?.split(' ')}
+      />
+    )
+  }
+
+  const renderSuggestionsContainer = ({ containerProps, children, query }) => {
+    const { key, ...menuProps } = containerProps
+    return (
+      <Box
+        key={key}
+        pos="absolute"
+        width="full"
+        bg="bg.panel"
+        mt="1"
+        boxShadow="lg"
+        maxHeight="80"
+        overflowY="auto"
+        padding="1.5"
+        zIndex="dropdown"
+        borderRadius="sm"
+        hidden={!searchResults ? true : undefined}
+        // data-state={searchResults ? 'open' : 'closed'}
+        // _open={{ animationStyle: 'slide-fade-in', animationDuration: 'fast' }}
+        // _closed={{
+        //   animationStyle: 'slide-fade-out',
+        //   animationDuration: 'faster',
+        // }}
+        // animationStyle={{ _open: 'slide-fade-in', _closed: 'slide-fade-out' }}
+        {...menuProps}
+      >
+        {children}
+      </Box>
+    )
   }
 
   const renderInputComponent = ({ key, ...inputProps }: any) => (
-    <Input {...inputProps} />
+    <InputGroup
+      w="full"
+      startElement={
+        isFetching || isIndexing ? <Spinner size="sm" /> : <LuSearch />
+      }
+    >
+      <Input
+        placeholder="Search games"
+        disabled={!currentData}
+        cursor={isFetching ? 'wait' : undefined}
+        {...inputProps}
+      />
+    </InputGroup>
   )
 
   return (
-    <Container py={16} maxW={704}>
-      <Stack>
-        <Heading>Game Search</Heading>
-        <HStack justify="flex-end">
-          {isFetching ? (
-            <Spinner />
-          ) : (
-            <Text textStyle="xs" color="fg.subtle">
-              <FormatNumber value={data!.desktop.length} /> games fetched{' '}
-              {fulfilledTimeStamp && timeAgo(new Date(fulfilledTimeStamp))}
-            </Text>
-          )}
-          <BrandStateSelect />
-        </HStack>
+    <Container maxW="3xl" py={24}>
+      <Stack gap={10}>
+        <Heading as="h1" size="5xl" fontWeight="bold" textAlign="center">
+          Game Tiles, Assemble!
+        </Heading>
 
-        {data && (
-          <Autosuggest
-            suggestions={searchResults ?? []}
-            onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-            onSuggestionsClearRequested={onSuggestionsClearRequested}
-            getSuggestionValue={getSuggestionValue}
-            renderSuggestion={renderSuggestion}
-            inputProps={{
-              value: query,
-              onChange(event, { newValue }) {
-                setQuery(newValue)
-              },
-            }}
-            renderInputComponent={renderInputComponent}
-            highlightFirstSuggestion
-            onSuggestionSelected={(event, { suggestion }) => {
-              dispatch(addGameTile(suggestion, { brand, state }))
-              setQuery('')
-            }}
+        <Stack>
+          <HStack justify="flex-end">
+            <FetchStatus
+              status={isError ? 'failed' : isFetching ? 'fetching' : undefined}
+              gameCount={data?.desktop.length ?? 0}
+              lastFetched={fulfilledTimeStamp}
+            />
+            <BrandStateSelect />
+          </HStack>
+          <Box pos="relative">
+            <Autosuggest
+              suggestions={searchResults ?? []}
+              onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+              onSuggestionsClearRequested={onSuggestionsClearRequested}
+              getSuggestionValue={getSuggestionValue}
+              renderSuggestion={renderSuggestion}
+              renderSuggestionsContainer={renderSuggestionsContainer}
+              shouldRenderSuggestions={value => value.trim().length > 2}
+              inputProps={{
+                value: query,
+                onChange(event, { newValue }) {
+                  setQuery(newValue)
+                },
+              }}
+              renderInputComponent={renderInputComponent}
+              highlightFirstSuggestion
+              onSuggestionSelected={(event, { suggestion: game }) => {
+                dispatch(addGameTile(game, { brand, state }))
+                setQuery('')
+              }}
+            />
+          </Box>
+        </Stack>
+
+        <Stack>
+          <HStack justify="space-between">
+            <Heading>Selected Games</Heading>
+            {tiles.length > 0 && (
+              <Button
+                size="xs"
+                colorPalette="red"
+                variant="subtle"
+                onClick={() => dispatch(tilesCleared())}
+              >
+                Clear
+              </Button>
+            )}
+          </HStack>
+          <TileList
+            tiles={tiles}
+            onTileRemove={id => () => dispatch(tileRemoved(id))}
           />
-        )}
+        </Stack>
 
-        <Heading>Selected Games</Heading>
-        {tiles && (
-          <ul>
-            {tiles.map(tile => (
-              <li key={tile.id}>{tile.name}</li>
-            ))}
-          </ul>
-        )}
-
-        <Heading>Game Tiles Code</Heading>
-        {tiles && <GameTilesCode tiles={tiles} />}
+        <Stack>
+          <Heading>Game Tiles Code</Heading>
+          {tiles && <GameTilesCode tiles={tiles} />}
+        </Stack>
       </Stack>
     </Container>
   )

@@ -3,6 +3,7 @@ import { CodeBlock } from 'react-code-block'
 import { themes } from 'prism-react-renderer'
 import { Box, chakra } from '@chakra-ui/react'
 import { ClipboardIconButton, ClipboardRoot } from '@/components/ui/clipboard'
+import { useColorModeValue } from '@/components/ui/color-mode'
 
 interface Props {
   tiles: ITile[]
@@ -12,6 +13,8 @@ interface Props {
 const CodeBlockCode = chakra(CodeBlock.Code)
 
 export const GameTilesCode = ({ tiles }: Props) => {
+  const darkMode = useColorModeValue(false, true)
+
   if (tiles.length < 1) {
     return
   }
@@ -33,7 +36,11 @@ ${tiles.map(tile => codeline({ tile })).join('\n')}
 </p>`
 
   return (
-    <CodeBlock code={code} language="html" theme={themes.github}>
+    <CodeBlock
+      code={code}
+      language="html"
+      theme={darkMode ? themes.vsDark : themes.github}
+    >
       <Box pos="relative">
         <CodeBlockCode
           whiteSpace="pre-wrap"
