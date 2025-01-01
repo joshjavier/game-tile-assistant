@@ -13,7 +13,12 @@ export const FetchStatus = memo(
   ({ status, gameCount, lastFetched }: FetchStatusProps) => {
     if (status) {
       return (
-        <Status size="sm" value={status === 'failed' ? 'error' : 'warning'}>
+        <Status
+          size="sm"
+          value={status === 'failed' ? 'error' : 'warning'}
+          color="fg.muted"
+          animation={status === 'fetching' ? 'pulse' : undefined}
+        >
           {status === 'failed'
             ? 'Error fetching game metadata'
             : 'Fetching games...'}
