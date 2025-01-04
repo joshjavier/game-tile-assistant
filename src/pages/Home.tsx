@@ -60,9 +60,9 @@ const Home = () => {
   const tiles = useAppSelector(selectTiles)
 
   useEffect(() => {
-    if (data?.desktop) {
+    if (data?.d) {
       removeAll()
-      addAllAsync(data?.desktop)
+      addAllAsync(data?.d)
     }
   }, [data])
 
@@ -148,7 +148,7 @@ const Home = () => {
           <HStack justify="flex-end">
             <FetchStatus
               status={isError ? 'failed' : isFetching ? 'fetching' : undefined}
-              gameCount={data?.desktop.length ?? 0}
+              gameCount={data?.d.length ?? 0}
               lastFetched={fulfilledTimeStamp}
             />
             <BrandStateSelect />
