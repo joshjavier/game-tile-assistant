@@ -73,6 +73,14 @@ const fetchGames = async (
   return response
 }
 
+/** Callback function to map server responses to a more compact version */
+const itemToGame = ({ game, name, provider, sid }: Record<string, string>) => ({
+  id: sid.slice(4),
+  game,
+  name,
+  provider,
+})
+
 export const onRequestGet: PagesFunction = async context => {
   const params = context.params.catchall
   const request = context.request
@@ -102,7 +110,10 @@ export const onRequestGet: PagesFunction = async context => {
     // first response.
     const desktopGameIds = d.map(game => game.sid)
     const mobileOnly = m.filter(game => !desktopGameIds.includes(game.sid))
-    const data = { d, m: mobileOnly }
+    const data = {
+      d: d.map(itemToGame),
+      m: mobileOnly.map(itemToGame),
+    }
 
     const options = {
       headers: { 'content-type': 'application/json;charset=UTF-8' },
