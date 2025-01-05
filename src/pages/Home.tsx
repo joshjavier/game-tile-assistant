@@ -62,7 +62,20 @@ const Home = () => {
   useEffect(() => {
     if (data?.d) {
       removeAll()
-      addAllAsync(data?.d)
+
+      // On rare occasions, different games will have the same IDs. This will
+      // cause a bug when MiniSearch tries to index data with duplicate IDs,
+      // such that only the last game with the same index will show up in
+      // searches. As a workaround, we'll make sure all game IDs are unique
+      // by appending the index of an item to its ID.
+      const gameIds = data.d.map(game => game.id)
+      const games = data.d.map((game, index) => {
+        return gameIds.indexOf(game.id) !== index
+          ? { ...game, id: `${game.id}-${index}` }
+          : game
+      })
+
+      addAllAsync(games)
     }
   }, [data])
 

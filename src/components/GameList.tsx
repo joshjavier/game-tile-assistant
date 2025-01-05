@@ -55,7 +55,7 @@ export const GameItem = ({
           {name}
         </Highlight>
         <Text textStyle="xs" color="fg.muted">
-          {game}
+          {provider}
         </Text>
       </Box>
       <IconButton
