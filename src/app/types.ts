@@ -9,10 +9,10 @@ import { isSomeEnum } from "../utils"
  * // https://casino.nj.(partycasino).com
  */
 export enum Brand {
-  betmgm = 'betmgm',
-  borgata = 'borgataonline',
-  partycasino = 'partycasino',
-  wof = 'wheeloffortunecasino',
+  betmgm = "betmgm",
+  borgata = "borgataonline",
+  partycasino = "partycasino",
+  wof = "wheeloffortunecasino",
 }
 
 /**
@@ -24,11 +24,11 @@ export enum Brand {
  * // https://casino.(on).wheeloffortunecasino.com
  */
 export enum State {
-  NJ = 'nj',
-  PA = 'pa',
-  MI = 'mi',
-  WV = 'wv',
-  ON = 'on',
+  NJ = "nj",
+  PA = "pa",
+  MI = "mi",
+  WV = "wv",
+  ON = "on",
 }
 
 /**
@@ -40,10 +40,20 @@ export enum State {
  * // /(wof)/on
  */
 export enum BrandSlug {
-  betmgm = 'betmgm',
-  borgata = 'borgata',
-  wof = 'wof',
-  partycasino = 'partycasino',
+  betmgm = "betmgm",
+  borgata = "borgata",
+  wof = "wof",
+  partycasino = "partycasino",
+}
+
+/**
+ * Brand abbreviations commonly used by the team
+ */
+export enum BrandAbbreviation {
+  betmgm = "mc",
+  borgata = "bc",
+  wof = "wof",
+  partycasino = "pc",
 }
 
 export const isBrandSlug = isSomeEnum(BrandSlug)
