@@ -5,7 +5,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { Provider as UiProvider } from '@/components/ui/provider'
 import App from './App'
 import { store } from './app/store'
-// import "./index.css"
+import './index.css'
 
 const container = document.getElementById('root')
 

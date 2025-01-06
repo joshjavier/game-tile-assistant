@@ -30,6 +30,7 @@ import { LuSearch } from 'react-icons/lu'
 import { useMiniSearch } from 'react-minisearch'
 import { useParams } from 'react-router'
 import { Button } from '@/components/ui/button'
+import { Headline } from '@/components/Headline'
 
 const miniSearchOptions: Options = {
   fields: ['name'],
@@ -153,9 +154,7 @@ const Home = () => {
   return (
     <Container maxW="3xl" py={24}>
       <Stack gap={10}>
-        <Heading as="h1" size="5xl" fontWeight="bold" textAlign="center">
-          Game Tiles, Assemble!
-        </Heading>
+        <Headline />
 
         <Stack>
           <HStack justify="flex-end">
