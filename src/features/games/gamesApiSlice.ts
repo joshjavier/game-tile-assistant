@@ -14,7 +14,7 @@ export const gamesApiSlice = createApi({
         { brand?: string; state?: string }
       >({
         query({ brand, state }) {
-          return `/${brand}/${state}`
+          return `?b=${brand}&s=${state}`
         },
         providesTags(result, error, arg, meta) {
           return [{ type: 'Games', id: `${arg.brand}_${arg.state}` }]
