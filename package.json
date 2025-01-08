@@ -33,7 +33,6 @@
     "short-time-ago": "^2.0.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241230.0",
     "@testing-library/dom": "^9.3.4",
     "@testing-library/jest-dom": "^6.2.0",
     "@testing-library/react": "^14.1.2",
