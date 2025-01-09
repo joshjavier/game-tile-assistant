@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import BrandStateSelect from '@/components/BrandStateSelect'
 import { FetchStatus } from '@/components/FetchStatus'
-import { TileList } from '@/components/TileList'
 import type { Game } from '@/features/games/gamesApi'
 import { useGetGamesQuery } from '@/features/games/gamesApiSlice'
 import { GameTilesCode } from '@/features/tiles/GameTilesCode'
@@ -16,9 +15,9 @@ import type { Options } from 'minisearch'
 import { useEffect, useState } from 'react'
 import { useMiniSearch } from 'react-minisearch'
 import { useParams } from 'react-router'
-import { Button } from '@/components/ui/button'
 import { Headline } from '@/components/Headline'
 import { GameSearch } from '@/components/GameSearch'
+import { GameSelection } from '@/components/GameSelection'
 
 const miniSearchOptions: Options = {
   fields: ['name'],
@@ -94,25 +93,11 @@ const Home = () => {
           />
         </Stack>
 
-        <Stack>
-          <HStack justify="space-between">
-            <Heading>Selected Games</Heading>
-            {tiles.length > 0 && (
-              <Button
-                size="xs"
-                colorPalette="red"
-                variant="subtle"
-                onClick={() => dispatch(tilesCleared())}
-              >
-                Clear
-              </Button>
-            )}
-          </HStack>
-          <TileList
-            tiles={tiles}
-            onTileRemove={id => () => dispatch(tileRemoved(id))}
-          />
-        </Stack>
+        <GameSelection
+          tiles={tiles}
+          onTileRemove={id => () => dispatch(tileRemoved(id))}
+          onTilesClear={() => dispatch(tilesCleared())}
+        />
 
         <Stack>
           <Heading>Game Tiles Code</Heading>
