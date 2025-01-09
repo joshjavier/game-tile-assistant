@@ -1,20 +1,20 @@
-import type { ButtonProps, InputProps } from "@chakra-ui/react"
+import type { ButtonProps, InputProps } from '@chakra-ui/react'
 import {
   Button,
   Clipboard as ChakraClipboard,
   IconButton,
   Input,
-} from "@chakra-ui/react"
-import * as React from "react"
-import { LuCheck, LuClipboard, LuLink } from "react-icons/lu"
+} from '@chakra-ui/react'
+import * as React from 'react'
+import { LuCheck, LuClipboard, LuLink } from 'react-icons/lu'
 
 const ClipboardIcon = React.forwardRef<
   HTMLDivElement,
-  ChakraClipboard.IndicatorProps
->(function ClipboardIcon(props, ref) {
+  ChakraClipboard.IndicatorProps & { icon?: React.ReactNode }
+>(function ClipboardIcon({ icon, ...props }, ref) {
   return (
     <ChakraClipboard.Indicator copied={<LuCheck />} {...props} ref={ref}>
-      <LuClipboard />
+      {icon ?? <LuClipboard />}
     </ChakraClipboard.Indicator>
   )
 })
@@ -83,12 +83,12 @@ export const ClipboardLink = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
 export const ClipboardIconButton = React.forwardRef<
   HTMLButtonElement,
-  ButtonProps
->(function ClipboardIconButton(props, ref) {
+  ButtonProps & { icon?: React.ReactNode }
+>(function ClipboardIconButton({ icon, ...props }, ref) {
   return (
     <ChakraClipboard.Trigger asChild>
       <IconButton ref={ref} size="xs" variant="subtle" {...props}>
-        <ClipboardIcon />
+        <ClipboardIcon icon={icon} />
         <ClipboardCopyText srOnly />
       </IconButton>
     </ChakraClipboard.Trigger>
