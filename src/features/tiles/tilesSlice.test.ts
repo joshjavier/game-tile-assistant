@@ -15,6 +15,7 @@ const gameTile: ITile = {
   name: 'Test Game Tile',
   slug: 'test',
   smartlink: 'test',
+  provider: 'test',
 }
 
 interface LocalTestContext {
