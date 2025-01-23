@@ -3,14 +3,13 @@ import BrandStateSelect from '@/components/BrandStateSelect'
 import { FetchStatus } from '@/components/FetchStatus'
 import type { Game } from '@/features/games/gamesApi'
 import { useGetGamesQuery } from '@/features/games/gamesApiSlice'
-import { GameTilesCode } from '@/features/tiles/GameTilesCode'
 import {
   addGameTile,
   selectTiles,
   tilesCleared,
   tileRemoved,
 } from '@/features/tiles/tilesSlice'
-import { Container, Heading, HStack, Stack } from '@chakra-ui/react'
+import { Container, HStack, Stack } from '@chakra-ui/react'
 import type { Options } from 'minisearch'
 import { useEffect, useState } from 'react'
 import { useMiniSearch } from 'react-minisearch'
@@ -18,6 +17,7 @@ import { useParams } from 'react-router'
 import { Headline } from '@/components/Headline'
 import { GameSearch } from '@/components/GameSearch'
 import { GameSelection } from '@/components/GameSelection'
+import { GameTiles } from '@/components/GameTiles'
 
 const miniSearchOptions: Options = {
   fields: ['name'],
@@ -65,10 +65,11 @@ const Home = () => {
 
       addAllAsync(games)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
   return (
-    <Container maxW="3xl" py={24}>
+    <Container maxW="3xl" pt="24" pb="60">
       <Stack gap={10}>
         <Headline />
 
@@ -99,10 +100,7 @@ const Home = () => {
           onTilesClear={() => dispatch(tilesCleared())}
         />
 
-        <Stack>
-          <Heading>Game Tiles Code</Heading>
-          {tiles && <GameTilesCode tiles={tiles} />}
-        </Stack>
+        {tiles.length > 0 && <GameTiles tiles={tiles} />}
       </Stack>
     </Container>
   )

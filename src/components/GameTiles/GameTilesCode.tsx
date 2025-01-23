@@ -1,9 +1,9 @@
-import type { ITile } from './tilesSlice'
+import type { ITile } from '@/features/tiles/tilesSlice'
 import { CodeBlock } from 'react-code-block'
-import { themes } from 'prism-react-renderer'
-import { Box, chakra } from '@chakra-ui/react'
+import { Box, chakra, Theme } from '@chakra-ui/react'
 import { ClipboardIconButton, ClipboardRoot } from '@/components/ui/clipboard'
-import { useColorModeValue } from '@/components/ui/color-mode'
+import { Tooltip } from '../ui/tooltip'
+import { useId } from 'react'
 
 interface Props {
   tiles: ITile[]
@@ -13,7 +13,7 @@ interface Props {
 const CodeBlockCode = chakra(CodeBlock.Code)
 
 export const GameTilesCode = ({ tiles }: Props) => {
-  const darkMode = useColorModeValue(false, true)
+  const id = useId()
 
   if (tiles.length < 1) {
     return
@@ -36,28 +36,36 @@ ${tiles.map(tile => codeline({ tile })).join('\n')}
 </p>`
 
   return (
-    <CodeBlock
-      code={code}
-      language="html"
-      theme={darkMode ? themes.vsDark : themes.github}
-    >
+    <CodeBlock code={code} language="html">
       <Box pos="relative">
         <CodeBlockCode
           whiteSpace="pre-wrap"
-          bg="bg.panel"
+          bg="gray.900"
           p={6}
-          borderRadius="xl"
-          shadow="lg"
+          rounded="md"
+          shadow="xl"
+          maxH="80vh"
+          overflow="auto"
           fontSize="sm"
+          overscrollBehavior="contain"
         >
           <CodeBlock.LineContent>
             <CodeBlock.Token />
           </CodeBlock.LineContent>
         </CodeBlockCode>
-
-        <ClipboardRoot value={code} pos="absolute" top="2" right="2">
-          <ClipboardIconButton />
-        </ClipboardRoot>
+        <Theme appearance="dark" colorPalette="teal">
+          <Tooltip ids={{ trigger: id }} content="Copy HTML Markup" portalled>
+            <ClipboardRoot
+              ids={{ root: id }}
+              value={code}
+              pos="absolute"
+              top="2"
+              right="2"
+            >
+              <ClipboardIconButton />
+            </ClipboardRoot>
+          </Tooltip>
+        </Theme>
       </Box>
     </CodeBlock>
   )
