@@ -32,7 +32,7 @@ export const GameTilesPreview = ({ tiles }: Props) => {
         css={{ '& > a': { flexShrink: 0 } }}
       >
         {tiles.map(tile => (
-          <GameTile tile={tile} />
+          <GameTile key={tile.id} tile={tile} />
         ))}
       </Stack>
     </Stack>

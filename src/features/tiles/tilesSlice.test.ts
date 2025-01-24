@@ -16,6 +16,7 @@ const gameTile: ITile = {
   slug: 'test',
   smartlink: 'test',
   provider: 'test',
+  gameUrl: 'test',
 }
 
 interface LocalTestContext {

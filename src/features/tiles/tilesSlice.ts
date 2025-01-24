@@ -11,6 +11,7 @@ export interface ITile {
   smartlink: string
   image: string
   provider: string
+  gameUrl: string
 }
 
 function gameToTile(game: [Game, Game?], brand = '', state = ''): ITile {
@@ -20,8 +21,11 @@ function gameToTile(game: [Game, Game?], brand = '', state = ''): ITile {
   const smartlink = game[1]
     ? `!!M2.Promo/launchmgc?gd=${slug}&gm=${mobile}`
     : `!!M2.CasinoHome/launchng/${slug}`
+  const gameUrl = game[1]
+    ? `${getCasinoBaseUrl(brand, state, { promoSubdomain: true })}/en/promo/launchmgc?gd=${slug}&gm=${mobile}`
+    : `${getCasinoBaseUrl(brand, state)}/en/games/launchng/${slug}`
 
-  return { id, name, provider, slug, mobile, smartlink, image }
+  return { id, name, provider, slug, mobile, smartlink, image, gameUrl }
 }
 
 export interface TilesSliceState {
