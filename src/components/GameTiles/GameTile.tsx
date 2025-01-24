@@ -6,7 +6,7 @@ interface Props {
 
 export const GameTile = ({ tile }: Props) => {
   return (
-    <a href={tile.smartlink}>
+    <a href={tile.gameUrl} target="_blank" rel="noreferrer">
       <img
         alt={tile.name}
         src={tile.image}

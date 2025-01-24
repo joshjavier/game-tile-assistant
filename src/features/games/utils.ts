@@ -13,7 +13,7 @@ import { Brand, BrandSlug, isBrandSlug, isState, State } from '../../app/types'
 export function getCasinoBaseUrl(
   brandSlug = 'betmgm',
   state = 'nj',
-  { gameSubdomain = false } = {},
+  { gameSubdomain = false, promoSubdomain = false } = {},
 ) {
   if (!isBrandSlug(brandSlug) || !isState(state)) {
     throw new Error('Invalid brand or state arguments')
@@ -21,7 +21,11 @@ export function getCasinoBaseUrl(
 
   const brand = Brand[BrandSlug[brandSlug]]
   const segments = {
-    product: gameSubdomain ? 'casinogames' : 'casino',
+    product: promoSubdomain
+      ? 'promo'
+      : gameSubdomain
+        ? 'casinogames'
+        : 'casino',
     state: state as State | null,
     brand,
     tld: 'com',
