@@ -62,7 +62,12 @@ export const addGameTile =
     const cachedQueries = getState().gamesApi.queries
     const cacheKey = `getGames(${JSON.stringify({ brand, state })})`
     const mobileGames: Game[] = (cachedQueries[cacheKey]?.data as any).m
-    const mobileVariant = mobileGames.find(g => g.name === game.name)
+    const mobileVariant = mobileGames.find(({ name, provider }) => {
+      if (provider === 'NETENT') {
+        return name.replace(/ Touch$/, '') === game.name
+      }
+      return name === game.name
+    })
     const gameTile = gameToTile([game, mobileVariant], brand, state)
     dispatch(tileAdded(gameTile))
   }
