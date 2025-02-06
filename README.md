@@ -1,27 +1,51 @@
-# vite-template-redux
+# Game Tiles, Assemble! [![Vercel Deploy][vercel-image]][vercel-url]
 
-Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
+[vercel-image]: https://deploy-badge.vercel.app/vercel/gametiles
+[vercel-url]: https://vercel.com/joshjaviers-projects/gametiles/deployments
 
-```sh
-npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
+> assemble game tiles (pretty) fast
+
+This is a simple tool that streamlines the process of assembling [game tiles](https://betmgm-manila-cms-docs.netlify.app/docs/builds/Game-Tiles).
+
+![Demo](game-tiles-demo.gif)
+
+## Features
+
+- ⚡️ Fetching game metadata is fast
+- 🌈 Switch between brands/states via dropdown or URL
+- ✨ Find games faster with fuzzy search and autosuggest
+- 🌸 Clean UI with dark mode
+- 🥷 No VPN needed
+
+## Run Locally
+
+```bash
+git clone https://github.com/joshjavier/game-tile-assistant
+cd game-tile-assistant
+npm install
+
+# Rename `vercel.json` to prevent a bug with Vercel and React Router
+mv vercel.json vercel.json.tmp
+
+# Start the dev server
+npx vercel dev
 ```
 
-## Goals
+**Note:** Do **not** stage/commit changes to `vercel.json`. There is a [bug with Vercel and React Router](https://github.com/joshjavier/game-tile-assistant/issues/2) that causes errors when developing locally, and temporarily renaming `vercel.json` is the best workaround that I've tried so far.
 
-- Easy migration from Create React App or Vite
-- As beginner friendly as Create React App
-- Optimized performance compared to Create React App
-- Customizable without ejecting
+## Built with
 
-## Scripts
+- [React](https://react.dev/)
+- [Redux+TS template for Vite](https://github.com/reduxjs/redux-templates/blob/master/packages/vite-template-redux/README.md)
+- [Chakra UI](https://chakra-ui.com/)
+- [MiniSearch](https://lucaong.github.io/minisearch/)
+- [React Autosuggest](https://react-autosuggest.js.org/)
+- [React Code Block](https://react-code-block.netlify.app/)
 
-- `dev`/`start` - start dev server and open browser
-- `build` - build for production
-- `preview` - locally preview production build
-- `test` - launch test runner
+## Author
 
-## Inspiration
+[@joshjavier](https://github.com/joshjavier)
 
-- [Create React App](https://github.com/facebook/create-react-app/tree/main/packages/cra-template)
-- [Vite](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react)
-- [Vitest](https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib)
+## License
+
+[MIT](LICENSE) &copy; Josh Javier
