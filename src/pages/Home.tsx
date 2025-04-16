@@ -10,23 +10,25 @@ import {
   tileRemoved,
 } from '@/features/tiles/tilesSlice'
 import { Container, HStack, Stack } from '@chakra-ui/react'
-import type { Options } from 'minisearch'
+// import type { Options } from 'minisearch'
 import { useEffect, useState } from 'react'
-import { useMiniSearch } from 'react-minisearch'
+// import { useMiniSearch } from 'react-minisearch'
+import { useFuzzySearchList } from '@nozbe/microfuzz/react'
 import { useParams } from 'react-router'
 import { Headline } from '@/components/Headline'
 import { GameSearch } from '@/components/GameSearch'
 import { GameSelection } from '@/components/GameSelection'
 import { GameTiles } from '@/components/GameTiles'
+import debounce from 'lodash.debounce'
 
-const miniSearchOptions: Options = {
-  fields: ['name'],
-  searchOptions: {
-    combineWith: 'AND',
-    prefix: true,
-    fuzzy: 0.2,
-  },
-}
+// const miniSearchOptions: Options = {
+//   fields: ['name'],
+//   searchOptions: {
+//     combineWith: 'AND',
+//     prefix: true,
+//     fuzzy: 0.2,
+//   },
+// }
 
 const Home = () => {
   const { brand, state } = useParams()
@@ -35,21 +37,38 @@ const Home = () => {
       brand,
       state,
     })
-  const {
-    search,
-    searchResults,
-    clearSearch,
-    addAllAsync,
-    removeAll,
-    isIndexing,
-  } = useMiniSearch<Game>([], miniSearchOptions)
+  // const {
+  //   search,
+  //   searchResults,
+  //   clearSearch,
+  //   addAllAsync,
+  //   removeAll,
+  //   isIndexing,
+  // } = useMiniSearch<Game>([], miniSearchOptions)
+  const [list, setList] = useState<Game[]>([])
   const [query, setQuery] = useState('')
+  // const [activeQuery, setActiveQuery] = useState('')
+  const searchResults = useFuzzySearchList({
+    list,
+    queryText: query,
+    getText: item => [item.name],
+    mapResultItem: ({ item, matches: [highlightRanges] }) => ({
+      item,
+      highlightRanges,
+    }),
+  })
   const dispatch = useAppDispatch()
   const tiles = useAppSelector(selectTiles)
 
+  const search = (query: string): void => {
+    console.log('suggestions fetch requested')
+    setQuery(query)
+  }
+  const debouncedSearch = debounce(search, 1000)
+
   useEffect(() => {
     if (data?.d) {
-      removeAll()
+      // removeAll()
 
       // On rare occasions, different games will have the same IDs. This will
       // cause a bug when MiniSearch tries to index data with duplicate IDs,
@@ -63,7 +82,8 @@ const Home = () => {
           : game
       })
 
-      addAllAsync(games)
+      // addAllAsync(games)
+      setList(games)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
@@ -83,14 +103,14 @@ const Home = () => {
             <BrandStateSelect />
           </HStack>
           <GameSearch
-            clearSearch={clearSearch}
+            clearSearch={() => setQuery('')}
             disabled={!currentData}
-            loading={isFetching || isIndexing}
+            loading={isFetching}
             onSelect={game => dispatch(addGameTile(game, { brand, state }))}
-            query={query}
-            search={search}
+            // query={query}
+            search={debouncedSearch}
             searchResults={searchResults}
-            setQuery={setQuery}
+            // setQuery={setQuery}
           />
         </Stack>
 

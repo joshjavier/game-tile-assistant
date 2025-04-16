@@ -4,11 +4,13 @@ import Autosuggest from 'react-autosuggest'
 import { GameItem } from './GameList'
 import { InputGroup } from './ui/input-group'
 import { LuSearch } from 'react-icons/lu'
+import type { HighlightRanges } from '@nozbe/microfuzz'
+import { useState } from 'react'
 
 interface GameSearchProps {
-  query: string
-  setQuery: (newValue: string) => void
-  searchResults: Game[] | null
+  // query: string
+  // setQuery: (newValue: string) => void
+  searchResults: { item: Game; highlightRanges: HighlightRanges | null }[]
   search: (query: string) => void
   clearSearch: () => void
   loading: boolean
@@ -17,8 +19,8 @@ interface GameSearchProps {
 }
 
 export const GameSearch = ({
-  query,
-  setQuery,
+  // query,
+  // setQuery,
   searchResults,
   search,
   clearSearch,
@@ -26,17 +28,22 @@ export const GameSearch = ({
   disabled,
   onSelect,
 }: GameSearchProps) => {
+  const [value, setValue] = useState('')
+
   return (
     <Box pos="relative">
       <Autosuggest
-        suggestions={searchResults ?? []}
+        suggestions={searchResults}
         onSuggestionsFetchRequested={({ value }) => search(value)}
         onSuggestionsClearRequested={() => clearSearch()}
-        getSuggestionValue={game => game.name}
-        renderSuggestion={({ id, ...game }, { query, isHighlighted }) => (
+        getSuggestionValue={suggestion => suggestion.item.name}
+        renderSuggestion={(
+          { item, highlightRanges },
+          { query, isHighlighted },
+        ) => (
           <GameItem
-            {...game}
-            query={query.split(' ')}
+            {...item}
+            ranges={highlightRanges}
             isHighlighted={isHighlighted}
           />
         )}
@@ -62,10 +69,10 @@ export const GameSearch = ({
             </Box>
           )
         }}
-        shouldRenderSuggestions={value => value.trim().length > 2}
+        // shouldRenderSuggestions={value => value.trim().length > 2}
         inputProps={{
-          value: query,
-          onChange: (event, { newValue }) => setQuery(newValue),
+          value,
+          onChange: (event, { newValue }) => setValue(newValue),
           type: 'search',
           placeholder: 'Search games',
           disabled,
@@ -89,9 +96,9 @@ export const GameSearch = ({
           )
         }}
         highlightFirstSuggestion
-        onSuggestionSelected={(event, { suggestion: game }) => {
+        onSuggestionSelected={(event, { suggestion: { item: game } }) => {
           onSelect(game)
-          setQuery('')
+          // setQuery('')
         }}
       />
     </Box>

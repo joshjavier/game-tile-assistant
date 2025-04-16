@@ -1,25 +1,27 @@
 import type { Game } from '@/features/games/gamesApi'
-import { Box, Highlight, HStack, IconButton, Text } from '@chakra-ui/react'
+import { Box, HStack, IconButton, Text } from '@chakra-ui/react'
+import type { HighlightRanges } from '@nozbe/microfuzz'
+import { Highlight } from '@nozbe/microfuzz/react'
 import { LuPlus } from 'react-icons/lu'
 
-interface GameListProps {
-  games: Game[]
-}
+// interface GameListProps {
+//   games: Game[]
+// }
 
-export const GameList = ({ games }: GameListProps) => {
-  return (
-    <ul>
-      {games.map(({ id, ...game }) => (
-        <li key={id}>
-          <GameItem {...game} />
-        </li>
-      ))}
-    </ul>
-  )
-}
+// export const GameList = ({ games }: GameListProps) => {
+//   return (
+//     <ul>
+//       {games.map(({ id, ...game }) => (
+//         <li key={id}>
+//           <GameItem {...game} />
+//         </li>
+//       ))}
+//     </ul>
+//   )
+// }
 
 type GameItemProps = Omit<Game, 'id'> & {
-  query?: string[]
+  ranges: HighlightRanges | null
   isHighlighted?: boolean
 }
 
@@ -28,7 +30,7 @@ export const GameItem = ({
   game,
   provider,
   isHighlighted,
-  query,
+  ranges,
 }: GameItemProps) => {
   return (
     <HStack
@@ -47,13 +49,7 @@ export const GameItem = ({
       textStyle="sm"
     >
       <Box>
-        <Highlight
-          ignoreCase
-          query={query || []}
-          styles={{ fontWeight: 'semibold' }}
-        >
-          {name}
-        </Highlight>
+        <Highlight text={name} ranges={ranges} />
         <Text textStyle="xs" color="fg.muted">
           {provider}
         </Text>
