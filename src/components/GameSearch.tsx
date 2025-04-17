@@ -29,10 +29,7 @@ export const GameSearch = ({
 }: GameSearchProps) => {
   const [value, setValue] = useState('')
 
-  const debouncedSearch = useDebouncedCallback(query => {
-    console.log(`search ${value} because input-changed`)
-    search(query)
-  }, 300)
+  const debouncedSearch = useDebouncedCallback(search, 300)
 
   const onSuggestionsFetchRequested: Autosuggest.SuggestionsFetchRequested = ({
     value,
@@ -41,21 +38,18 @@ export const GameSearch = ({
     if (reason === 'input-changed') {
       debouncedSearch(value.trim())
     } else {
-      console.log(`suggestions fetch requested for ${value} because ${reason}`)
       search(value.trim())
     }
   }
 
   const onSuggestionsClearRequested: Autosuggest.OnSuggestionsClearRequested =
     () => {
-      console.log('suggestions clear requested')
       search('')
     }
 
   const onSuggestionsSelected: Autosuggest.OnSuggestionSelected<
     SearchResult
   > = (event, data) => {
-    console.log(`suggestions selected ${data.suggestionValue}`)
     onSelect(data.suggestion.item)
     setValue('')
     search('')
