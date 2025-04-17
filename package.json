@@ -32,7 +32,7 @@
     "react-redux": "^9.1.0",
     "react-router": "^7.0.2",
     "short-time-ago": "^2.0.0",
-    "usehooks-ts": "^3.1.1"
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@testing-library/dom": "^9.3.4",

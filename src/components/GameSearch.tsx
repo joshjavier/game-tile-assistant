@@ -1,69 +1,47 @@
 import type { Game } from '@/features/games/gamesApi'
-import { Box, Input, Spinner } from '@chakra-ui/react'
+import { Box, Center, Input, Spinner } from '@chakra-ui/react'
 import Autosuggest from 'react-autosuggest'
 import { GameItem } from './GameList'
 import { InputGroup } from './ui/input-group'
 import { LuSearch } from 'react-icons/lu'
 import type { HighlightRanges } from '@nozbe/microfuzz'
 import { useState } from 'react'
-import { useParams } from 'react-router'
-import { useGetGamesQuery } from '@/features/games/gamesApiSlice'
-import { useFuzzySearchList } from '@nozbe/microfuzz/react'
-import { useDebounceCallback } from 'usehooks-ts'
+import { useDebouncedCallback } from 'use-debounce'
 
 type SearchResult = { item: Game; highlightRanges: HighlightRanges | null }
 
 interface GameSearchProps {
-  // query: string
-  // setQuery: (newValue: string) => void
-  // searchResults: SearchResult[]
-  // search: (query: string) => void
-  // clearSearch: () => void
-  // loading: boolean
-  // disabled: boolean
+  queryText: string
+  searchResults: SearchResult[]
+  search: (query: string) => void
+  loading: boolean
+  disabled: boolean
   onSelect: (game: Game) => void
 }
 
 export const GameSearch = ({
-  // query,
-  // setQuery,
-  // searchResults,
-  // search,
-  // clearSearch,
-  // loading,
-  // disabled,
+  queryText,
+  searchResults,
+  search,
+  loading,
+  disabled,
   onSelect,
 }: GameSearchProps) => {
   const [value, setValue] = useState('')
-  // const [suggestions, setSuggestions] = useState<SearchResult[]>([])
 
-  const { brand, state } = useParams()
-  const {
-    data,
-    isFetching: loading,
-    currentData,
-  } = useGetGamesQuery({ brand, state })
-
-  const [queryText, search] = useState('')
-  const searchResults = useFuzzySearchList({
-    list: data?.d ?? [],
-    queryText,
-    getText: item => [item.name],
-    mapResultItem: ({ item, matches: [highlightRanges] }) => ({
-      item,
-      highlightRanges,
-    }),
-  })
-  const debouncedSearch = useDebounceCallback(search, 250)
+  const debouncedSearch = useDebouncedCallback(query => {
+    console.log(`search ${value} because input-changed`)
+    search(query)
+  }, 300)
 
   const onSuggestionsFetchRequested: Autosuggest.SuggestionsFetchRequested = ({
     value,
     reason,
   }) => {
-    console.log(`suggestions fetch requested for ${value} because ${reason}`)
     if (reason === 'input-changed') {
       debouncedSearch(value.trim())
     } else {
+      console.log(`suggestions fetch requested for ${value} because ${reason}`)
       search(value.trim())
     }
   }
@@ -87,10 +65,6 @@ export const GameSearch = ({
     <Box pos="relative">
       <Autosuggest
         suggestions={queryText === '' ? [] : searchResults}
-        // onSuggestionHighlighted={({ suggestion }) => {
-        //   console.log('suggestion highlighted')
-        //   console.log(suggestion)
-        // }}
         onSuggestionsFetchRequested={onSuggestionsFetchRequested}
         onSuggestionsClearRequested={onSuggestionsClearRequested}
         onSuggestionSelected={onSuggestionsSelected}
@@ -123,6 +97,9 @@ export const GameSearch = ({
               hidden={queryText === '' ? true : undefined}
               {...menuProps}
             >
+              {!debouncedSearch.isPending() && searchResults.length === 0 && (
+                <Center padding="8">No matching games found.</Center>
+              )}
               {children}
             </Box>
           )
@@ -132,7 +109,7 @@ export const GameSearch = ({
           onChange: (event, { newValue }) => setValue(newValue),
           type: 'search',
           placeholder: 'Search games',
-          disabled: !currentData,
+          disabled,
         }}
         renderInputComponent={inputProps => {
           const { key, ...props } =
