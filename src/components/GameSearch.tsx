@@ -1,42 +1,75 @@
 import type { Game } from '@/features/games/gamesApi'
-import { Box, Input, Spinner } from '@chakra-ui/react'
+import { Box, Center, Input, Spinner } from '@chakra-ui/react'
 import Autosuggest from 'react-autosuggest'
 import { GameItem } from './GameList'
 import { InputGroup } from './ui/input-group'
 import { LuSearch } from 'react-icons/lu'
+import type { HighlightRanges } from '@nozbe/microfuzz'
+import { useState } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
+
+type SearchResult = { item: Game; highlightRanges: HighlightRanges | null }
 
 interface GameSearchProps {
-  query: string
-  setQuery: (newValue: string) => void
-  searchResults: Game[] | null
+  queryText: string
+  searchResults: SearchResult[]
   search: (query: string) => void
-  clearSearch: () => void
   loading: boolean
   disabled: boolean
   onSelect: (game: Game) => void
 }
 
 export const GameSearch = ({
-  query,
-  setQuery,
+  queryText,
   searchResults,
   search,
-  clearSearch,
   loading,
   disabled,
   onSelect,
 }: GameSearchProps) => {
+  const [value, setValue] = useState('')
+
+  const debouncedSearch = useDebouncedCallback(search, 300)
+
+  const onSuggestionsFetchRequested: Autosuggest.SuggestionsFetchRequested = ({
+    value,
+    reason,
+  }) => {
+    if (reason === 'input-changed') {
+      debouncedSearch(value.trim())
+    } else {
+      search(value.trim())
+    }
+  }
+
+  const onSuggestionsClearRequested: Autosuggest.OnSuggestionsClearRequested =
+    () => {
+      search('')
+    }
+
+  const onSuggestionsSelected: Autosuggest.OnSuggestionSelected<
+    SearchResult
+  > = (event, data) => {
+    onSelect(data.suggestion.item)
+    setValue('')
+    search('')
+  }
+
   return (
     <Box pos="relative">
       <Autosuggest
-        suggestions={searchResults ?? []}
-        onSuggestionsFetchRequested={({ value }) => search(value)}
-        onSuggestionsClearRequested={() => clearSearch()}
-        getSuggestionValue={game => game.name}
-        renderSuggestion={({ id, ...game }, { query, isHighlighted }) => (
+        suggestions={queryText === '' ? [] : searchResults}
+        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+        onSuggestionsClearRequested={onSuggestionsClearRequested}
+        onSuggestionSelected={onSuggestionsSelected}
+        getSuggestionValue={suggestion => suggestion.item.name}
+        renderSuggestion={(
+          { item, highlightRanges },
+          { query, isHighlighted },
+        ) => (
           <GameItem
-            {...game}
-            query={query.split(' ')}
+            {...item}
+            ranges={highlightRanges}
             isHighlighted={isHighlighted}
           />
         )}
@@ -55,17 +88,19 @@ export const GameSearch = ({
               padding="1.5"
               zIndex="dropdown"
               borderRadius="sm"
-              hidden={!searchResults ? true : undefined}
+              hidden={queryText === '' ? true : undefined}
               {...menuProps}
             >
+              {!debouncedSearch.isPending() && searchResults.length === 0 && (
+                <Center padding="8">No matching games found.</Center>
+              )}
               {children}
             </Box>
           )
         }}
-        shouldRenderSuggestions={value => value.trim().length > 2}
         inputProps={{
-          value: query,
-          onChange: (event, { newValue }) => setQuery(newValue),
+          value,
+          onChange: (event, { newValue }) => setValue(newValue),
           type: 'search',
           placeholder: 'Search games',
           disabled,
@@ -89,10 +124,6 @@ export const GameSearch = ({
           )
         }}
         highlightFirstSuggestion
-        onSuggestionSelected={(event, { suggestion: game }) => {
-          onSelect(game)
-          setQuery('')
-        }}
       />
     </Box>
   )
