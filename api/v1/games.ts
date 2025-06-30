@@ -49,6 +49,10 @@ const fetchGames = (
   const baseUrl = getCasinoBaseUrl(brand, state)
   const apiUrl = baseUrl + '/en/games/api/content/GetGameMetaDataFromLMTAsync'
   const request = new Request(apiUrl)
+
+  // Since Single-Domain Migration, x-bwin-casino-api header needs to be set
+  request.headers.set('X-Bwin-Casino-Api', 'prod')
+
   if (mobile) {
     request.headers.set(
       'User-Agent',

@@ -6,8 +6,9 @@ export const DeprecationBanner = () => {
     <header className={classes.banner}>
       <IoAlertCircle size={20} aria-label="Notice" className={classes.icon} />
       <p>
-        Game Tiles Assemble is no longer functional due to recent API updates.
-        The tool is now deprecated and will no longer be maintained.
+        Game Tiles Assemble is now in maintenance mode due to recent API
+        updates. A new and improved version is currently in the works—stay
+        tuned!
       </p>
     </header>
   )
