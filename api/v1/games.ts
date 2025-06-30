@@ -20,7 +20,7 @@ const getCasinoBaseUrl = (
 
   const brand = brandDomain[brandSlug]
   const segments: Record<string, string | null> = {
-    product: gameSubdomain ? 'casinogames' : 'casino',
+    product: gameSubdomain ? 'casinogames' : 'www',
     state,
     brand,
     tld: 'com',
