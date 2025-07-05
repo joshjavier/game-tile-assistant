@@ -1,0 +1,15 @@
+:is(.base, .logotype) {
+  fill: light-dark(#474747, #eee);
+}
+
+.tile {
+  fill: light-dark(#eee, #474747);
+}
+
+.key :nth-child(2) {
+  fill: #d9d9d9;
+
+  @mixin dark {
+    opacity: 0.1;
+  }
+}

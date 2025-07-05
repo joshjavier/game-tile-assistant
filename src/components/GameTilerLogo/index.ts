@@ -1,0 +1,1 @@
+export { GameTilerLogo } from './GameTilerLogo';
