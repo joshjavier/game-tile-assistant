@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -8,6 +8,14 @@
       content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
     />
     <title>Vite + Mantine App</title>
+
+    <!-- Prevent color flash during page load when on dark mode -->
+    <style>
+      :root[data-mantine-color-scheme='dark'] {
+        background-color: #242424;
+      }
+    </style>
+    <script src="/theme-toggle.js"></script>
   </head>
   <body>
     <div id="root"></div>
