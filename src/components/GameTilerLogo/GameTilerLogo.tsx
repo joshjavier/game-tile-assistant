@@ -5,7 +5,14 @@ interface GameTilerLogoProps extends React.ComponentPropsWithoutRef<'svg'> {}
 
 export function GameTilerLogo({ ...props }: GameTilerLogoProps) {
   return (
-    <svg viewBox="0 0 1182 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" {...props}>
+    <svg
+      viewBox="0 0 1182 250"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className={classes.root}
+      preserveAspectRatio="xMinYMid slice"
+      {...props}
+    >
       <g className={classes.logomark}>
         <path
           d="M0 48.7179C0 21.8118 21.8118 0 48.718 0H201.282C228.188 0 250 21.8118 250 48.718V201.282C250 228.188 228.188 250 201.282 250H48.7179C21.8118 250 0 228.188 0 201.282V48.7179Z"

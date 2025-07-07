@@ -13,3 +13,9 @@
     opacity: 0.1;
   }
 }
+
+@mixin smaller-than $mantine-breakpoint-xs {
+  .root {
+    width: 30px;
+  }
+}
