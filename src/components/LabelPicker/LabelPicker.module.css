@@ -1,0 +1,61 @@
+.control {
+  gap: var(--mantine-spacing-xs);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  border-radius: var(--mantine-radius-md);
+  transition: background-color 150ms ease;
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  font-weight: 500;
+  font-size: var(--mantine-font-size-lg);
+
+  &[data-expanded] {
+    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5));
+  }
+
+  @mixin hover {
+    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5));
+  }
+}
+
+.label,
+.placeholder {
+  font-family: var(--mantine-font-family-headings);
+}
+
+.placeholder {
+  opacity: 0.7;
+}
+
+.option {
+  font-weight: 300;
+  font-size: var(--mantine-font-size-md);
+
+  @mixin light {
+    &:not([data-combobox-selected]) {
+      color: var(--mantine-color-dark-6);
+    }
+
+    &[data-combobox-selected] {
+      background-color: var(--mantine-color-blue-8);
+    }
+  }
+
+  &[data-combobox-active] {
+    font-weight: 500;
+  }
+
+  .label {
+    margin-right: auto;
+  }
+}
+
+.icon {
+  transition: transform 150ms ease;
+  transform: rotate(0deg);
+
+  [data-expanded] & {
+    transform: rotate(180deg);
+  }
+}
