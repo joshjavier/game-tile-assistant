@@ -1,0 +1,12 @@
+/* afacad-flux */
+@font-face {
+  font-display: swap;
+  font-family: 'Afacad Flux';
+  font-style: normal;
+  font-weight: 100 900;
+  src: url('/fonts/AfacadFlux[slnt,wght].woff2') format('woff2');
+}
+
+[id='root'] {
+  min-height: 100vh;
+}
