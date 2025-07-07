@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { IconChevronDown } from '@tabler/icons-react';
 import { useNavigate, useParams } from 'react-router';
 import { CheckIcon, Combobox, Group, Image, UnstyledButton, useCombobox } from '@mantine/core';
@@ -23,7 +24,7 @@ const data: Item[] = [
   { value: 'wof:on', label: 'Wheel of Fortune ON', image: images.wof },
 ];
 
-function SelectOption({ label, image, isActive }: Item & { isActive: boolean }) {
+const SelectOption = memo(({ label, image, isActive }: Item & { isActive: boolean }) => {
   return (
     <Group gap="xs">
       <Image src={image} w={18} h={18} radius={999} alt="" />
@@ -31,7 +32,7 @@ function SelectOption({ label, image, isActive }: Item & { isActive: boolean }) 
       {isActive && <CheckIcon size={12} />}
     </Group>
   );
-}
+});
 
 export function LabelPicker() {
   const combobox = useCombobox({
@@ -72,6 +73,7 @@ export function LabelPicker() {
         combobox.closeDropdown();
       }}
       classNames={{ option: classes.option }}
+      transitionProps={{ transition: 'fade', duration: 150 }}
     >
       <Combobox.Target>
         <UnstyledButton className={classes.control} onClick={() => combobox.toggleDropdown()}>
