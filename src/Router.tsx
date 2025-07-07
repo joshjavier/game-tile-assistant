@@ -2,8 +2,8 @@ import { createBrowserRouter, redirect } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { Root, RootBoundary } from './components/Root';
 import { isValidLabel } from './lib/utils';
+import { ErrorPage } from './pages/Error.page';
 import { HomePage } from './pages/Home.page';
-import { HomeBoundary } from './pages/HomeBoundary';
 
 const router = createBrowserRouter([
   {
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
           }
         },
         Component: HomePage,
-        ErrorBoundary: HomeBoundary,
+        ErrorBoundary: ErrorPage,
       },
     ],
   },

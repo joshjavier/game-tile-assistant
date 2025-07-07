@@ -1,0 +1,1 @@
+export { NothingFoundBackground } from './NothingFoundBackground';
