@@ -1,9 +1,9 @@
-import { Welcome } from '../components/Welcome/Welcome';
+import { GameSearchComboboxContainer } from '@/components/GameSearchCombobox';
 
 export function HomePage() {
   return (
     <>
-      <Welcome />
+      <GameSearchComboboxContainer />
     </>
   );
 }

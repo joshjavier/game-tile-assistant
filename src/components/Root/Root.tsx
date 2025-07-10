@@ -1,13 +1,14 @@
 import { Outlet } from 'react-router';
+import { Container } from '@mantine/core';
 import { Header } from '../Header';
 
 export function Root() {
   return (
     <>
       <Header />
-      <main>
+      <Container component="main">
         <Outlet />
-      </main>
+      </Container>
     </>
   );
 }
