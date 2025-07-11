@@ -107,8 +107,10 @@ export function GameSearchCombobox({ games }: GameSearchComboboxProps) {
             fetchResults(event.currentTarget.value);
             combobox.openDropdown();
           }}
-          onClick={() => combobox.openDropdown()}
-          onFocus={() => combobox.openDropdown()}
+          onFocus={() => {
+            combobox.openDropdown();
+            combobox.selectFirstOption();
+          }}
           onBlur={() => combobox.closeDropdown()}
         />
       </Combobox.Target>
