@@ -1,7 +1,15 @@
 import { memo, startTransition, useMemo, useState } from 'react';
 import createFuzzySearch, { FuzzyResult } from '@nozbe/microfuzz';
 import { IconSearch } from '@tabler/icons-react';
-import { Combobox, Loader, Text, TextInput, useCombobox } from '@mantine/core';
+import {
+  Combobox,
+  Loader,
+  NumberFormatter,
+  ScrollArea,
+  Text,
+  TextInput,
+  useCombobox,
+} from '@mantine/core';
 import { Game } from '@/lib/types';
 import { Highlight } from './Highlight';
 import classes from './GameSearchCombobox.module.css';
@@ -23,12 +31,20 @@ const GameResult = memo(({ item, matches: [highlightRanges] }: FuzzyResult<Game>
   );
 });
 
-const SearchResults = ({ data }: { data: FuzzyResult<Game>[] | null }) => {
+const SearchResults = ({ data, total }: { data: FuzzyResult<Game>[] | null; total: number }) => {
   const results = (data || []).map((result) => <GameResult key={result.item.game} {...result} />);
 
   return (
     <Combobox.Options>
-      {results.length === 0 ? <Combobox.Empty>No results found</Combobox.Empty> : results}
+      <Combobox.Header>
+        <Text fz="xs" c="dimmed">
+          <NumberFormatter value={data?.length} thousandSeparator /> matches out of{' '}
+          <NumberFormatter value={total} thousandSeparator /> games
+        </Text>
+      </Combobox.Header>
+      <ScrollArea.Autosize mah={400}>
+        {results.length === 0 ? <Combobox.Empty>No results found</Combobox.Empty> : results}
+      </ScrollArea.Autosize>
     </Combobox.Options>
   );
 };
@@ -92,7 +108,7 @@ export function GameSearchCombobox({ games }: GameSearchComboboxProps) {
       </Combobox.Target>
 
       <Combobox.Dropdown hidden={data === null}>
-        <SearchResults data={data} />
+        <SearchResults data={data} total={games.d.length} />
       </Combobox.Dropdown>
     </Combobox>
   );
