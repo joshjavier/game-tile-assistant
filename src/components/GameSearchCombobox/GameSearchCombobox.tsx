@@ -1,4 +1,6 @@
-import { memo, startTransition, useCallback, useRef, useState } from 'react';
+import { memo, startTransition, useMemo, useState } from 'react';
+import createFuzzySearch, { FuzzyResult } from '@nozbe/microfuzz';
+import { Highlight } from '@nozbe/microfuzz/react';
 import { IconSearch } from '@tabler/icons-react';
 import { Combobox, Loader, Text, TextInput, useCombobox } from '@mantine/core';
 import { Game } from '@/lib/types';
@@ -8,21 +10,21 @@ interface GameSearchComboboxProps {
   games: { d: Game[]; m: Game[] };
 }
 
-const GameResult = memo(({ name, provider }: Game) => {
+const GameResult = memo(({ item, matches: [highlightRanges] }: FuzzyResult<Game>) => {
   return (
-    <Combobox.Option value={name}>
+    <Combobox.Option value={item.name}>
       <Text fz="sm" fw={500}>
-        {name}
+        <Highlight text={item.name} ranges={highlightRanges} />
       </Text>
       <Text fz="xs" opacity={0.6}>
-        {provider}
+        {item.provider}
       </Text>
     </Combobox.Option>
   );
 });
 
-const SearchResults = ({ data }: { data: Game[] | null }) => {
-  const results = (data || []).map((item) => <GameResult key={item.game} {...item} />);
+const SearchResults = ({ data }: { data: FuzzyResult<Game>[] | null }) => {
+  const results = (data || []).map((result) => <GameResult key={result.item.game} {...result} />);
 
   return (
     <Combobox.Options>
@@ -37,24 +39,9 @@ export function GameSearchCombobox({ games }: GameSearchComboboxProps) {
   });
 
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Game[] | null>(null);
+  const [data, setData] = useState<FuzzyResult<Game>[] | null>(null);
   const [value, setValue] = useState('');
-  const abortController = useRef<AbortController | undefined>(null);
-
-  // TODO: Replace this function with microfuzz
-  const getAsyncData = useCallback((searchQuery: string, signal: AbortSignal): Promise<Game[]> => {
-    return new Promise<Game[]>((resolve, reject) => {
-      signal.addEventListener('abort', () => {
-        reject(new Error('Request aborted'));
-      });
-
-      setTimeout(() => {
-        resolve(
-          games.d.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
-        );
-      }, Math.random() * 1000);
-    });
-  }, []);
+  const fuzzySearch = useMemo(() => createFuzzySearch(games.d, { key: 'name' }), [games.d]);
 
   const fetchResults = async (query: string) => {
     if (query.trim() === '') {
@@ -63,16 +50,12 @@ export function GameSearchCombobox({ games }: GameSearchComboboxProps) {
       return;
     }
 
-    abortController.current?.abort();
-    abortController.current = new AbortController();
     setLoading(true);
 
-    const result = await getAsyncData(query, abortController.current.signal);
     startTransition(() => {
-      setData(result);
+      setData(fuzzySearch(query));
       setLoading(false);
     });
-    abortController.current = undefined;
   };
 
   return (
