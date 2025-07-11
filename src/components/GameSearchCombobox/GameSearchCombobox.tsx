@@ -1,9 +1,9 @@
 import { memo, startTransition, useMemo, useState } from 'react';
 import createFuzzySearch, { FuzzyResult } from '@nozbe/microfuzz';
-import { Highlight } from '@nozbe/microfuzz/react';
 import { IconSearch } from '@tabler/icons-react';
 import { Combobox, Loader, Text, TextInput, useCombobox } from '@mantine/core';
 import { Game } from '@/lib/types';
+import { Highlight } from './Highlight';
 import classes from './GameSearchCombobox.module.css';
 
 interface GameSearchComboboxProps {
