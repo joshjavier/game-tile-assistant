@@ -1,0 +1,11 @@
+.searchbox {
+  max-inline-size: 500px;
+  margin-inline: auto;
+}
+
+.highlight {
+  --mark-bg-dark: var(--mantine-color-yellow-5);
+  --mark-bg-light: var(--mantine-color-yellow-2);
+  background-color: light-dark(var(--mark-bg-light), var(--mark-bg-dark));
+  color: var(--mantine-color-black);
+}
