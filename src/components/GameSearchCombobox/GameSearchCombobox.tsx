@@ -1,4 +1,4 @@
-import { memo, startTransition, useMemo, useState } from 'react';
+import { memo, startTransition, useEffect, useMemo, useState } from 'react';
 import createFuzzySearch, { FuzzyResult } from '@nozbe/microfuzz';
 import { IconSearch } from '@tabler/icons-react';
 import {
@@ -59,6 +59,13 @@ export function GameSearchCombobox({ games }: GameSearchComboboxProps) {
   const [value, setValue] = useState('');
   const fuzzySearch = useMemo(() => createFuzzySearch(games.d, { key: 'name' }), [games.d]);
 
+  useEffect(() => {
+    // We need to wait for results to render before we can select the first one
+    if (!loading && value.trim() !== '') {
+      combobox.selectFirstOption();
+    }
+  }, [loading]);
+
   const fetchResults = async (query: string) => {
     if (query.trim() === '') {
       setData(null);
@@ -98,7 +105,6 @@ export function GameSearchCombobox({ games }: GameSearchComboboxProps) {
           onChange={(event) => {
             setValue(event.currentTarget.value);
             fetchResults(event.currentTarget.value);
-            // combobox.resetSelectedOption();
             combobox.openDropdown();
           }}
           onClick={() => combobox.openDropdown()}
