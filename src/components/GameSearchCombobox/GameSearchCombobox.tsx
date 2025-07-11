@@ -38,7 +38,8 @@ const SearchResults = ({ data, total }: { data: FuzzyResult<Game>[] | null; tota
     <Combobox.Options>
       <Combobox.Header>
         <Text fz="xs" c="dimmed">
-          <NumberFormatter value={data?.length} thousandSeparator /> matches out of{' '}
+          <NumberFormatter value={data?.length} thousandSeparator />{' '}
+          {data?.length === 1 ? 'match' : 'matches'} out of{' '}
           <NumberFormatter value={total} thousandSeparator /> games
         </Text>
       </Combobox.Header>
