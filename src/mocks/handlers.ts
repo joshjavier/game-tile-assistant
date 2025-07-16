@@ -9,14 +9,14 @@ export const handlers = [
     });
   }),
 
-  http.get('/api/v1/games', async ({ request }) => {
+  http.get('/api/v2/games', async ({ request }) => {
     const url = new URL(request.url);
 
     const brand = url.searchParams.get('b');
     const state = url.searchParams.get('s');
 
     if (!brand || !state || !isValidLabel(brand, state)) {
-      return HttpResponse.json({ error: 'Invalid label' }, { status: 404 });
+      return HttpResponse.json({ error: 'Invalid label' }, { status: 400 });
     }
 
     await delay(3000); // Simulate real-world delay which takes about 3 seconds

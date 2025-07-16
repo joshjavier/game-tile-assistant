@@ -26,7 +26,7 @@ export function Router() {
                 return redirect('nj');
               }
 
-              const games = fetch(`/api/v1/games?b=${brand}&s=${state}`).then((res) => res.json());
+              const games = fetch(`/api/v2/games?b=${brand}&s=${state}`).then((res) => res.json());
 
               return { games };
             },
