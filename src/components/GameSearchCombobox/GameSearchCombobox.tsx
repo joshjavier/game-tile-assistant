@@ -15,7 +15,7 @@ import { Highlight } from './Highlight';
 import classes from './GameSearchCombobox.module.css';
 
 interface GameSearchComboboxProps {
-  games: { d: Game[]; m: Game[] };
+  games: Game[];
 }
 
 const GameResult = memo(({ item, matches: [highlightRanges] }: FuzzyResult<Game>) => {
@@ -58,7 +58,7 @@ export function GameSearchCombobox({ games }: GameSearchComboboxProps) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<FuzzyResult<Game>[] | null>(null);
   const [value, setValue] = useState('');
-  const fuzzySearch = useMemo(() => createFuzzySearch(games.d, { key: 'name' }), [games.d]);
+  const fuzzySearch = useMemo(() => createFuzzySearch(games, { key: 'name' }), [games]);
 
   useEffect(() => {
     // We need to wait for results to render before we can select the first one
@@ -117,7 +117,7 @@ export function GameSearchCombobox({ games }: GameSearchComboboxProps) {
       </Combobox.Target>
 
       <Combobox.Dropdown hidden={data === null}>
-        <SearchResults data={data} total={games.d.length} />
+        <SearchResults data={data} total={games.length} />
       </Combobox.Dropdown>
     </Combobox>
   );

@@ -3,4 +3,5 @@ export interface Game {
   game: string;
   name: string;
   provider: string;
+  mobile?: string;
 }

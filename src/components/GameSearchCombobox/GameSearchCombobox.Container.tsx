@@ -4,7 +4,7 @@ import { Game } from '@/lib/types';
 import { GameSearchCombobox } from './GameSearchCombobox';
 
 export function GameSearchComboboxContainer() {
-  const { games } = useLoaderData<{ games: Promise<{ d: Game[]; m: Game[] }> }>();
+  const { games } = useLoaderData<{ games: Promise<Game[]> }>();
 
   return (
     <React.Suspense fallback={<>Loading games...</>}>
