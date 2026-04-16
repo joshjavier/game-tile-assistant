@@ -19,10 +19,10 @@ function gameToTile(game: [Game, Game?], brand = '', state = ''): ITile {
   const image = `${getCasinoBaseUrl(brand, state, { gameSubdomain: true })}/htmllobby/images/newlmticons/square/${slug}.jpg`
   const mobile = game[1] ? game[1].game : undefined
   const smartlink = game[1]
-    ? `!!M2.Promo/launchmgc?gd=${slug}&gm=${mobile}`
+    ? `!!M2.Engage/pub/launchmgc?gd=${slug}&gm=${mobile}`
     : `!!M2.CasinoHome/launchng/${slug}`
   const gameUrl = game[1]
-    ? `${getCasinoBaseUrl(brand, state, { promoSubdomain: true })}/en/promo/launchmgc?gd=${slug}&gm=${mobile}`
+    ? `${getCasinoBaseUrl(brand, state, { promoSubdomain: true })}/en/engage/pub/launchmgc?gd=${slug}&gm=${mobile}`
     : `${getCasinoBaseUrl(brand, state)}/en/games/launchng/${slug}`
 
   return { id, name, provider, slug, mobile, smartlink, image, gameUrl }
