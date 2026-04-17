@@ -22,7 +22,7 @@ function gameToTile(game: [Game, Game?], brand = '', state = ''): ITile {
     ? `!!M2.Engage/pub/launchmgc?gd=${slug}&gm=${mobile}`
     : `!!M2.CasinoHome/launchng/${slug}`
   const gameUrl = game[1]
-    ? `${getCasinoBaseUrl(brand, state, { promoSubdomain: true })}/en/engage/pub/launchmgc?gd=${slug}&gm=${mobile}`
+    ? `${getCasinoBaseUrl(brand, state)}/en/engage/pub/launchmgc?gd=${slug}&gm=${mobile}`
     : `${getCasinoBaseUrl(brand, state)}/en/games/launchng/${slug}`
 
   return { id, name, provider, slug, mobile, smartlink, image, gameUrl }
