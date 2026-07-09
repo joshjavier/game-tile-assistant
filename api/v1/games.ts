@@ -1,7 +1,7 @@
 import type { GameMetaData } from '../_lib/types'
 
 const brandSlugs = ['betmgm', 'borgata', 'wof', 'partycasino']
-const states = ['nj', 'pa', 'mi', 'wv', 'on']
+const states = ['nj', 'pa', 'mi', 'wv', 'on', 'ab']
 const brandDomain = {
   betmgm: 'betmgm',
   borgata: 'borgataonline',
@@ -26,8 +26,8 @@ const getCasinoBaseUrl = (
     tld: 'com',
   }
 
-  // MC ON has a '.ca' top-level domain
-  if (brandSlug === 'betmgm' && state === 'on') {
+  // MC ON and MC AB have a '.ca' top-level domain
+  if (brandSlug === 'betmgm' && (state === 'on' || state === 'ab')) {
     segments.tld = 'ca'
   }
 
